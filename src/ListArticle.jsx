@@ -1,27 +1,42 @@
+import axios from "axios";
 import React from "react";
-export default function ListArticle({ a, postArticle }) {
+
+const TOKEN =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3QxMjM0NTY3OEBnbWFpbC5jb20iLCJ1c2VybmFtZSI6InBvc3RlciIsImlhdCI6MTY2NjE3MTg5MCwiZXhwIjoxNjcxMzU1ODkwfQ.P22R2OOd7B6CXZH-1-LkU1oFwJHOXSQ_LN3PswbHge4";
+export default function ListArticle({ articles, postArticle }) {
+  const favorite = (slug) => {
+    axios
+      .post(`https://api.realworld.io/api/articles/${slug}/favorite`, null, {
+        headers: {
+          Authorization: `Bearer ${TOKEN}`,
+        },
+      })
+      .then((response) => {
+        console.log("response", response);
+      });
+  };
   return (
     <div id="main">
-      <div class="left_side">
-        {a.map((item, index) => (
+      <div className="left_side">
+        {articles.map((item, index) => (
           <div>
             <h2>
               <a href="#">{item?.author?.username}</a>
             </h2>
             <h3>{item.createdAt}</h3>
-            <div class="img">
+            <div className="img">
               <img src={item?.author.image} alt="" />
             </div>
             {item.slug}
-            <p class="date">
+            <p className="date">
               Posted by David <img src="images/more.gif" alt="" />{" "}
               <a href="#">Read more</a> <img src="images/comment.gif" alt="" />{" "}
               <a href="#">Comments (3)</a>{" "}
-              <a href="#" onClick={() => postArticle(item.slug)}>
+              <a href="#" onClick={() => favorite(item.slug)}>
                 {item.favorited ? (
-                  <i class="bi bi-heart-fill"></i>
+                  <i className="bi bi-heart-fill"></i>
                 ) : (
-                  <i class="bi bi-heart"></i>
+                  <i className="bi bi-heart"></i>
                 )}
 
                 {item.favoritesCount}

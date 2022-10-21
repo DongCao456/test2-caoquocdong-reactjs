@@ -6,14 +6,14 @@ export default function Pagination({ totalPage, setPage }) {
     arrPage.push(i);
   }
   return (
-    <div class="pagination">
-      <a href="#">&laquo;</a>
+    <div className="pagination">
+      <button>&laquo;</button>
       {arrPage.map((item, index) => (
-        <a href="#" onClick={() => setPage(item)}>
+        <button onClick={() => setPage(item)} key={index}>
           {item}
-        </a>
+        </button>
       ))}
-      <a href="#">&raquo;</a>
+      <button>&raquo;</button>
     </div>
   );
 }

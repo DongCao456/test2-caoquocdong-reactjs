@@ -1,5 +1,5 @@
-export const pagin = {
+export const PAGINATION = {
   LIMIT: 10,
-  CURRENTPAGE: 1,
-  TOTAL: 0,
+  CURRENT_PAGE: 1,
+  TOTAL_PAGE: 0,
 };
