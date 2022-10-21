@@ -1,4 +1,5 @@
 import React from "react";
+import { resizeParagph } from "./constant";
 export default function ListArticle({ a, postArticle }) {
   return (
     <div id="main">
@@ -12,12 +13,12 @@ export default function ListArticle({ a, postArticle }) {
             <div class="img">
               <img src={item?.author.image} alt="" />
             </div>
-            {item.slug}
+            {resizeParagph(item.slug)}
             <p class="date">
               Posted by David <img src="images/more.gif" alt="" />{" "}
               <a href="#">Read more</a> <img src="images/comment.gif" alt="" />{" "}
               <a href="#">Comments (3)</a>{" "}
-              <a href="#" onClick={() => postArticle(item.slug)}>
+              <a href="#" onClick={(event) => postArticle(event, item.slug)}>
                 {item.favorited ? (
                   <i class="bi bi-heart-fill"></i>
                 ) : (
