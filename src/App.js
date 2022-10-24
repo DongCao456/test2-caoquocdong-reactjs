@@ -70,7 +70,7 @@ function App() {
           <div id="main">
             <div class="left_side">
               {article.map((item, index) => (
-                <ListArticle a={item}></ListArticle>
+                <ListArticle articleItem={item}></ListArticle>
               ))}
             </div>
           </div>

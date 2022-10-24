@@ -1,22 +1,22 @@
 import React, { useState } from "react";
 import { resizeParagph, resizeParagph1 } from "./constant";
-export default function ListArticle({ a }) {
+export default function ListArticle({ articleItem }) {
   const [read, setRead] = useState(false);
   const clickRead = (event) => {
-    event.preventDefault();
     setRead(!read);
+    event.preventDefault();
   };
   return (
     <div>
       <div>
         <h2>
-          <a href="#">{a?.author?.username}</a>
+          <a href="#">{articleItem?.author?.username}</a>
         </h2>
-        <h3>{a.createdAt}</h3>
+        <h3>{articleItem.createdAt}</h3>
         <div class="img">
-          <img src={a?.author?.image} alt="" />
+          <img src={articleItem?.author?.image} alt="" />
         </div>
-        {read ? a.slug : resizeParagph(a.slug)}
+        {read ? articleItem.slug : resizeParagph(articleItem.slug)}
         <p class="date">
           Posted by David <img src="images/more.gif" alt="" />{" "}
           <a href="#" onClick={clickRead}>
@@ -24,13 +24,13 @@ export default function ListArticle({ a }) {
           </a>{" "}
           <img src="images/comment.gif" alt="" /> <a href="#">Comments (3)</a>{" "}
           <a href="#">
-            {a.favorited ? (
+            {articleItem.favorited ? (
               <i class="bi bi-heart-fill"></i>
             ) : (
               <i class="bi bi-heart"></i>
             )}
 
-            {a.favoritesCount}
+            {articleItem.favoritesCount}
           </a>{" "}
           <img src="images/timeicon.gif" alt="" /> 21.02.
         </p>
