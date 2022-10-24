@@ -1,59 +1,87 @@
 import logo from "./logo.svg";
 import "./App.css";
 import ListArticle from "./ListArticle";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import axios from "axios";
 import Pagination from "./Pagination";
-import { pagin } from "./constant";
+import { PAGINATIONCONST, resizeParagph, resizeParagph1 } from "./constant";
 
 import "bootstrap-icons/font/bootstrap-icons.css";
 import _ from "lodash";
 function App() {
   const tokenStr =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3QxMjM0NTY3OEBnbWFpbC5jb20iLCJ1c2VybmFtZSI6InBvc3RlciIsImlhdCI6MTY2NjE3MjI1NSwiZXhwIjoxNjcxMzU2MjU1fQ.h1F2e5B6F7s-kUsII1mIrPmXr1fyF4xaUicpEU0pyR4";
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3QxMjM0NTY3OEBnbWFpbC5jb20iLCJ1c2VybmFtZSI6InBvc3RlciIsImlhdCI6MTY2NjQwNjMxMSwiZXhwIjoxNjcxNTkwMzExfQ.IPa-RBRomRl3n5H45KltHmTFsKGd727_9n5nSZLdUSY";
   const headers = { Authorization: `Bearer ${tokenStr}` };
-  const [page, setPage] = useState(1);
-  const [articleLenght, setArticleLenght] = useState(0);
+  const [user, setUser] = useState("");
   const [numberPagi, setNumberPagi] = useState({
     totalPage: 10,
-    curentpage: pagin.CURRENTPAGE,
+    curentpage: PAGINATIONCONST.CURRENTPAGE,
   });
   const [article, setArticle] = useState([]);
-  const [articleLike, setArticleLike] = useState([]);
+  const [heart, setHeart] = useState("");
 
+  const [selected, setSelected] = useState(0);
+  const [loading, setLoading] = useState(false);
+  // const clickRead = (event, number) => {
+  //   event.preventDefault();
+  //   setRead(!read);
+  //   setSelected(number);
+  //   console.log(number);
+  // };
   useEffect(() => {
+    setLoading(true);
     axios
-      .get(`https://api.realworld.io/api/articles/?limit=10&offset=${page}`)
-      .then((res) => setArticleLenght(res.data.articlesCount));
-    setNumberPagi({
-      ...numberPagi,
-      totalPage: 10,
-      curentpage: pagin.CURRENTPAGE,
-    });
-  }, [articleLike]);
-  console.log(articleLenght);
-  useEffect(() => {
-    axios
-      .get(`https://api.realworld.io/api/articles/?limit=10&offset=${page}`)
-      .then((response) => setArticle(response.data.articles));
-  }, [article]);
+      .get(
+        `https://api.realworld.io/api/articles/?limit=${PAGINATIONCONST.LIMIT}&offset=${numberPagi.curentpage}`
+      )
+      .then((res) => {
+        setArticle(res.data.articles);
+        setNumberPagi({
+          ...numberPagi,
+          totalPage: Math.ceil(res.data?.articlesCount / PAGINATIONCONST.LIMIT),
+        });
+        setLoading(false);
+      });
+  }, [numberPagi.curentpage]);
+
+  const onchangePage = (page) => {
+    setNumberPagi((pre) => (pre = { ...pre, curentpage: page }));
+  };
 
   const postArticle = (event, slug) => {
     event.preventDefault();
+    console.log(headers);
     axios
-      .post(`https://api.realworld.io/api/articles/${slug}/favorite`, null, {
+      .delete(`https://api.realworld.io/api/articles/${slug}/favorite`, {
         headers,
       })
-      .then((response) => console.log(response));
+      .then((response) => {
+        console.log(response.data);
+        setArticle([...article]);
+      });
   };
 
   return (
-    <div className="content">
-      <ListArticle a={article} postArticle={postArticle}></ListArticle>
-      <Pagination
-        totalPage={numberPagi.totalPage}
-        setPage={setPage}
-      ></Pagination>
+    <div className="container">
+      {loading && <p>Loading...</p>}
+      {article.length === 0 && !loading && <p>No Data</p>}
+      {article.length > 0 && (
+        <Fragment>
+          <div id="main">
+            <div class="left_side">
+              {article.map((item, index) => (
+                <ListArticle a={item}></ListArticle>
+              ))}
+            </div>
+          </div>
+
+          <Pagination
+            totalPage={numberPagi.totalPage}
+            setPage={onchangePage}
+            page={numberPagi.curentpage}
+          ></Pagination>
+        </Fragment>
+      )}
     </div>
   );
 }

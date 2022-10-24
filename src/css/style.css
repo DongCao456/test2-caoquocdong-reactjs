@@ -340,3 +340,8 @@ input.text:hover {
 	color: #7BA813;
 	background: inherit;
 }
+
+.link-page:active{
+	background-color: blue;
+	color: white;
+}
