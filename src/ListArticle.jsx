@@ -1,10 +1,18 @@
 import React, { useState } from "react";
 import { resizeParagph, resizeParagph1 } from "./constant";
-export default function ListArticle({ articleItem }) {
+export default function ListArticle({ articleItem, like, unlike }) {
   const [read, setRead] = useState(false);
   const clickRead = (event) => {
     setRead(!read);
     event.preventDefault();
+  };
+
+  const favoriteAction = async (articleItem) => {
+    if (articleItem?.favorited) {
+      await unlike(articleItem.slug);
+      return;
+    }
+    await like(articleItem.slug);
   };
   return (
     <div>
@@ -23,7 +31,7 @@ export default function ListArticle({ articleItem }) {
             {read ? "Read Less" : "Read More"}
           </a>{" "}
           <img src="images/comment.gif" alt="" /> <a href="#">Comments (3)</a>{" "}
-          <a href="#">
+          <a href="#" onClick={() => favoriteAction(articleItem)}>
             {articleItem.favorited ? (
               <i class="bi bi-heart-fill"></i>
             ) : (

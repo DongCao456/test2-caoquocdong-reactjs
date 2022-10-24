@@ -341,7 +341,3 @@ input.text:hover {
 	background: inherit;
 }
 
-.link-page:active{
-	background-color: blue;
-	color: white;
-}

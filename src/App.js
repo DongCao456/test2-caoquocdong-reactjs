@@ -18,7 +18,7 @@ function App() {
     curentpage: PAGINATIONCONST.CURRENTPAGE,
   });
   const [article, setArticle] = useState([]);
-  const [heart, setHeart] = useState("");
+  const [heart, setHeart] = useState(false);
 
   const [selected, setSelected] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -28,11 +28,15 @@ function App() {
   //   setSelected(number);
   //   console.log(number);
   // };
+  const [Isfavorite, setIsFavorite] = useState(false);
   useEffect(() => {
     setLoading(true);
     axios
       .get(
-        `https://api.realworld.io/api/articles/?limit=${PAGINATIONCONST.LIMIT}&offset=${numberPagi.curentpage}`
+        `https://api.realworld.io/api/articles/?limit=${PAGINATIONCONST.LIMIT}&offset=${numberPagi.curentpage}`,
+        {
+          headers,
+        }
       )
       .then((res) => {
         setArticle(res.data.articles);
@@ -41,15 +45,28 @@ function App() {
           totalPage: Math.ceil(res.data?.articlesCount / PAGINATIONCONST.LIMIT),
         });
         setLoading(false);
+        setHeart();
+        console.log(res.data.articles);
       });
-  }, [numberPagi.curentpage]);
+  }, [numberPagi.curentpage, Isfavorite]);
 
   const onchangePage = (page) => {
     setNumberPagi((pre) => (pre = { ...pre, curentpage: page }));
   };
 
-  const postArticle = (event, slug) => {
-    event.preventDefault();
+  const like = (slug) => {
+    console.log(headers);
+    axios
+      .post(`https://api.realworld.io/api/articles/${slug}/favorite`, null, {
+        headers,
+      })
+      .then((response) => {
+        console.log(response.data);
+        setIsFavorite(!Isfavorite);
+      });
+  };
+
+  const unlike = (slug) => {
     console.log(headers);
     axios
       .delete(`https://api.realworld.io/api/articles/${slug}/favorite`, {
@@ -57,7 +74,8 @@ function App() {
       })
       .then((response) => {
         console.log(response.data);
-        setArticle([...article]);
+
+        setIsFavorite(!Isfavorite);
       });
   };
 
@@ -70,7 +88,11 @@ function App() {
           <div id="main">
             <div class="left_side">
               {article.map((item, index) => (
-                <ListArticle articleItem={item}></ListArticle>
+                <ListArticle
+                  articleItem={item}
+                  like={like}
+                  unlike={unlike}
+                ></ListArticle>
               ))}
             </div>
           </div>
